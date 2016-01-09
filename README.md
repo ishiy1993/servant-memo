@@ -6,7 +6,7 @@ Servantで簡単なメモアプリを作ってみました。
 ## ビルド
 
 ~~~
-$ git clone
+$ git clone https://github.com/ishiy1993/servant-memo.git
 $ cd servant-memo
 $ stack build
 ~~~
