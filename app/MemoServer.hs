@@ -36,10 +36,8 @@ server = getMemos
                 memos <- runDb $ selectList [] []
                 let mis = map entityToMemoInfo memos
                 return mis
-            postMemo :: MemoData -> EitherT ServantErr IO ()
-            postMemo (MemoData tt cn) = do
-                dt <- lift $ getCurrentTime
-                let memo = Memo tt dt cn
+            postMemo :: Memo -> EitherT ServantErr IO ()
+            postMemo memo = do
                 runDb $ insert_ memo
             getMemoDetail :: Int64 -> EitherT ServantErr IO Memo
             getMemoDetail id = do
@@ -48,15 +46,11 @@ server = getMemos
                 case mm of
                   Nothing -> left err404
                   Just m -> return m
-            putMemo :: Int64 -> MemoData -> EitherT ServantErr IO Memo
-            putMemo id (MemoData tt cn) = do
+            putMemo :: Int64 -> Memo -> EitherT ServantErr IO Memo
+            putMemo id memo = do
                 let key = toSqlKey id
-                dt <- lift $ getCurrentTime
-                let newMemo = [ MemoTitle =. tt
-                              , MemoDate =. dt
-                              , MemoContent =. cn
-                              ]
-                runDb $ updateGet key newMemo
+                runDb $ repsert key memo
+                return memo
             deleteMemo :: Int64 -> EitherT ServantErr IO ()
             deleteMemo id = do
                 let key = toSqlKey id :: Key Memo

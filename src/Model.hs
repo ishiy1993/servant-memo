@@ -38,13 +38,6 @@ data MemoInfo = MemoInfo { id :: Int64
 instance ToJSON MemoInfo
 instance FromJSON MemoInfo
 
-data MemoData = MemoData { tt :: Text
-                         , cn :: Text
-                         } deriving Generic
-
-instance ToJSON MemoData
-instance FromJSON MemoData
-
 db :: Text
 db = "memo.db"
 

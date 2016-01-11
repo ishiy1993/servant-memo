@@ -19,9 +19,9 @@ main = do
     doReq args
 
 getMemos :: EitherT ServantError IO [MemoInfo]
-postMemo :: MemoData -> EitherT ServantError IO ()
+postMemo :: Memo -> EitherT ServantError IO ()
 getMemoDetail :: Int64 -> EitherT ServantError IO Memo
-putMemo :: Int64 -> MemoData -> EitherT ServantError IO Memo
+putMemo :: Int64 -> Memo -> EitherT ServantError IO Memo
 deleteMemo :: Int64 -> EitherT ServantError IO ()
 
 getMemos :<|> postMemo :<|> getMemoDetail :<|> putMemo :<|> deleteMemo =
@@ -40,8 +40,9 @@ doReq ["list"] = do
               memoInfoToStr (MemoInfo id tt) =
                   show id ++ ": " ++ unpack tt
 doReq ["add", tt, cn] = do
-    let md = MemoData (pack tt) (pack cn)
-    res <- runEitherT $ postMemo md
+    dt <- getCurrentTime
+    let memo = Memo (pack tt) dt (pack cn)
+    res <- runEitherT $ postMemo memo
     case res of
       Left err -> putStrLn $ "Error: " ++ show err
       Right _ -> putStrLn "Success"
@@ -51,13 +52,14 @@ doReq ["detail", id] = do
       Left err -> putStrLn $ "Error: " ++ show err
       Right memo -> displayMemo memo
 doReq ["modify", id, tt, cn] = do
-    let md = MemoData (pack tt) (pack cn)
-    res <- runEitherT $ putMemo (read id) md
+    dt <- getCurrentTime
+    let memo = Memo (pack tt) dt (pack cn)
+    res <- runEitherT $ putMemo (read id) memo
     case res of
       Left err -> putStrLn $ "Error: " ++ show err
-      Right memo -> do
+      Right memo' -> do
           putStrLn "Change to"
-          displayMemo memo
+          displayMemo memo'
 doReq ["delete", id] = do
     res <- runEitherT $ deleteMemo (read id)
     case res of
