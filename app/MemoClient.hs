@@ -25,8 +25,9 @@ putMemo :: Int64 -> Memo -> EitherT ServantError IO Memo
 deleteMemo :: Int64 -> EitherT ServantError IO ()
 
 getMemos :<|> postMemo :<|> getMemoDetail :<|> putMemo :<|> deleteMemo =
-    client api url
+    client api' url
         where
+            api' = Proxy :: Proxy MemoAPI
             url = BaseUrl Http "localhost" 8080
 
 doReq :: [String] -> IO ()

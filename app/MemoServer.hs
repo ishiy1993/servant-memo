@@ -22,9 +22,13 @@ main = do
     run 8080 app
 
 app :: Application
-app = logStdoutDev $ serve api server
+app = logStdoutDev $ serve api server'
 
-server :: Server API
+server' :: Server API
+server' = serveDirectory "frontend"
+     :<|> server
+
+server :: Server MemoAPI
 server = getMemos
     :<|> postMemo
     :<|> getMemoDetail
