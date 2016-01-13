@@ -1,0 +1,58 @@
+Elm.Memo = Elm.Memo || {};
+Elm.Memo.make = function (_elm) {
+   "use strict";
+   _elm.Memo = _elm.Memo || {};
+   if (_elm.Memo.values) return _elm.Memo.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Effects = Elm.Effects.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Http = Elm.Http.make(_elm),
+   $Json$Decode = Elm.Json.Decode.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Model = Elm.Model.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Task = Elm.Task.make(_elm);
+   var _op = {};
+   var memoInfoRow = function (mi$) {
+      return A2($Html.tr,
+      _U.list([]),
+      _U.list([A2($Html.td,_U.list([]),_U.list([$Html.text($Basics.toString(mi$.id))])),A2($Html.td,_U.list([]),_U.list([$Html.text(mi$.tit)]))]));
+   };
+   var view = F2(function (address,model) {
+      return A2($Html.div,
+      _U.list([]),
+      _U.list([A2($Html.h1,_U.list([]),_U.list([$Html.text("Memos")]))
+              ,A2($Html.table,
+              _U.list([]),
+              _U.list([A2($Html.thead,
+                      _U.list([]),
+                      _U.list([A2($Html.tr,
+                      _U.list([]),
+                      _U.list([A2($Html.th,_U.list([]),_U.list([$Html.text("ID")])),A2($Html.th,_U.list([]),_U.list([$Html.text("Title")]))]))]))
+                      ,A2($Html.tbody,_U.list([]),A2($List.map,memoInfoRow,model.memoInfos))]))]));
+   });
+   var mi = A3($Json$Decode.object2,$Model.MemoInfo,A2($Json$Decode._op[":="],"tit",$Json$Decode.string),A2($Json$Decode._op[":="],"id",$Json$Decode.$int));
+   var mis = $Json$Decode.list(mi);
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      return {ctor: "_Tuple2",_0: _U.update(model,{memoInfos: A2($Maybe.withDefault,_U.list([]),_p0._0)}),_1: $Effects.none};
+   });
+   var GetMemos = function (a) {    return {ctor: "GetMemos",_0: a};};
+   var getMemos = $Effects.task(A2($Task.map,GetMemos,$Task.toMaybe(A2($Debug.log,"Response",A2($Http.get,mis,"http://localhost:8080/memos")))));
+   var Model = function (a) {    return {memoInfos: a};};
+   var init = {ctor: "_Tuple2",_0: Model(_U.list([])),_1: getMemos};
+   return _elm.Memo.values = {_op: _op
+                             ,Model: Model
+                             ,GetMemos: GetMemos
+                             ,init: init
+                             ,update: update
+                             ,getMemos: getMemos
+                             ,mi: mi
+                             ,mis: mis
+                             ,memoInfoRow: memoInfoRow
+                             ,view: view};
+};

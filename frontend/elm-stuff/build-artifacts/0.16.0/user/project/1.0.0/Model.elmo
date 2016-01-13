@@ -1,0 +1,18 @@
+Elm.Model = Elm.Model || {};
+Elm.Model.make = function (_elm) {
+   "use strict";
+   _elm.Model = _elm.Model || {};
+   if (_elm.Model.values) return _elm.Model.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Date = Elm.Date.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var MemoInfo = F2(function (a,b) {    return {tit: a,id: b};});
+   var Memo = F3(function (a,b,c) {    return {title: a,date: b,content: c};});
+   return _elm.Model.values = {_op: _op,Memo: Memo,MemoInfo: MemoInfo};
+};
